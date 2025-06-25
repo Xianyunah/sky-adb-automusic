@@ -107,26 +107,8 @@ wireless_port = 5555
 
 ---
 
-Let me know if you'd like it formatted into a downloadable README file too!
 
 
-
-
-
-
-
-
-
-
-# Sky Auto Piano Script 🎹
-
-An automated piano-playing script for *Sky: Children of the Light*, built entirely in Python using `os`, `json`, `time`, `subprocess`, and more. It interacts with Android devices using ADB Shell to simulate piano play via pre-defined note sequences.
-
-## Features
-- Fully Python-powered, no external executables required
-- Easy configuration with `configparser`
-- Timing precision with `time.sleep`
-- Works with any device that supports ADB
 
 ## License
 This project is licensed under the **GNU AGPL-3.0 with additional restrictions**:
