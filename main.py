@@ -117,14 +117,15 @@ def load_config():
     wireless_ip   = settings.get("wireless_ip", DEFAULT_WIRELESS_IP)
     wireless_port = settings.get("wireless_port", DEFAULT_WIRELESS_PORT)
 
+    if use_wireless:
+        connect_wireless(wireless_ip, wireless_port)
+
+
     devices = list_adb_devices()
     if len(devices) > 1:
         select_device(devices)
     elif len(devices) == 0:
         raise ConnectionError("没有检测到任何设备，请检查连接状态。")
-
-    if use_wireless:
-        connect_wireless(wireless_ip, wireless_port)
 
     mapping = {}
     for raw_key, raw_val in cfg["KeyMapping"].items():
@@ -220,10 +221,26 @@ def play_low_latency(chart, adb_cmd, mapping):
     proc.wait()
     print()
 
+
+
 if __name__ == "__main__":
-    while True:  # 增加循环以便用户确认退出或继续
+    while True:  # 主循环，支持用户选择重新播放乐谱
         try:
+            # 加载配置
             adb_cmd, key_mapping = load_config()
+
+            # 判断是否启用无线调试
+            cfg = ConfigParser()
+            cfg.optionxform = str
+            with open(CONFIG_FILE, "r", encoding="utf-8") as f:
+                cfg.read_file(f)
+            use_wireless = cfg["Settings"].get("use_wireless", "false").lower() == "true"
+            if use_wireless:
+                wireless_ip = cfg["Settings"].get("wireless_ip", DEFAULT_WIRELESS_IP)
+                wireless_port = cfg["Settings"].get("wireless_port", DEFAULT_WIRELESS_PORT)
+                connect_wireless(wireless_ip, wireless_port)
+
+            # 让用户选择乐谱文件
             chart_file = detect_skym_files()
             chart = load_chart(chart_file)
             all_keys = {n["key"] for n in chart["songNotes"]}
@@ -239,7 +256,7 @@ if __name__ == "__main__":
             play_low_latency(chart, adb_cmd, key_mapping)
             print("\n演奏结束！")
 
-            # 用户确认是否退出或重新选择乐谱
+            # 用户确认是否退出或重新选择
             while True:
                 user_choice = input("\n是否要退出程序？(输入 '是' 退出，输入 '否' 重新选择乐谱)：").strip().lower()
                 if user_choice == "是":
@@ -253,3 +270,5 @@ if __name__ == "__main__":
 
         except Exception as e:
             print(f"\n[!] 脚本错误：{e}")
+
+
