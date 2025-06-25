@@ -34,14 +34,6 @@ wireless_port = 5555
 
 ---
 
-
-
-
-Here are the English and Japanese translations of your README:
-
----
-
-
 ### Using `.skym` Format  
 To use the software, simply rename the `.txt` file exported from Sky Music Studio to `xxx.skym`.
 
